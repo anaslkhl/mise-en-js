@@ -57,7 +57,7 @@ const flotte = [
     prix_jour: 80,
     km: 22000,
     note: 4.7,
-    disponible: true,
+    disponible: false,
   },
   {
     id: 7,
@@ -67,7 +67,7 @@ const flotte = [
     prix_jour: 110,
     km: 8000,
     note: 4.9,
-    disponible: true,
+    disponible: false,
   },
   {
     id: 8,
@@ -151,28 +151,118 @@ const flotte = [
   },
 ];
 
-// Construire un objet groupé par catégorie. Pour chaque catégorie calculer :
-//      — nbTotal        : nombre de véhicules dans la catégorie
+function avgPriceByCategory(obj) {
+  let result = {};
 
-function Groupmarke(obj) {
-  let markes = {};
   for (let i = 0; i < obj.length; i++) {
-    let marquee = obj[i].marque;
-
-    if (markes[marquee] === "undefined") {
-      markes[marquee] = { nbTotal: 0 };
+    const cat = obj[i].cat;
+    const price = obj[i].prix_jour;
+    if (!result[cat]) {
+      result[cat] = { price: 0, total: 0 };
     }
-    markes[marquee].nbTotal++;
+    result[cat].price += price;
+    result[cat].total++;
   }
-  return markes;
+
+  const moyenne = {};
+  for (let cat in result) {
+    moyenne[cat] = result[cat].price / result[cat].total;
+  }
+
+  return moyenne;
 }
 
-// console.log(Groupmarke(flotte));
+function availableCars(obj) {
+  let result = [];
 
+  for (let i = 0; i < obj.length; i++) {
+    if (obj[i].disponible === true && obj[i].note >= 4.0) {
+      result.push({
+        ...obj[i],
+        prix_promo: obj[i].prix_jour * 0.9,
+      });
+    }
+  }
 
+  return result;
+}
 
-const available = flotte.filter((ele) => ele.disponible === true);
-console.log(available)
+function topThreeCars(obj) {
+  for (let i = 0; i < obj.length - 1; i++) {
+    for (let o = i + 1; o < obj.length; o++) {
+      if (obj[i].note <= obj[o].note) {
+        const temp = obj[i].note;
+        obj[i].note = obj[o].note;
+        obj[o].note = temp;
+      }
+    }
+  }
 
-const avgPrice = flotte.reduce((occ, avg) => occ.disponible + avg.disponible)
-console.log(avgPrice);
+  let result = obj.slice(0, 3);
+  return result;
+}
+
+function groupsBy(obj) {
+  let result = {};
+
+  for (let i = 0; i < obj.length; i++) {
+    let marque = obj[i].marque;
+
+    if (!result[marque]) {
+      result[marque] = [];
+    }
+    result[marque].push(obj[i]);
+  }
+  return result;
+}
+
+function destructingAndFilter(cars) {
+  let result = [];
+
+  for (const { id, marque, modele, km } of cars) {
+    if (km < 50000) {
+      result.push({
+        id,
+        marque,
+        modele,
+        km,
+      });
+    }
+  }
+  return result;
+}
+
+function groupCategories(obj) {
+  let result = [];
+
+  const suvs = obj.filter((car) => car.cat === 'SUV');
+
+  const groupByBrand = {};
+
+  for (let suv of suvs)
+  {
+    const brand = suv.marque;
+    if(!groupByBrand[brand]){
+        groupByBrand[brand] = [];
+    }
+
+    groupByBrand[brand].push(suv)
+  }
+
+  for(let brand in groupByBrand)
+  {
+    const cheapestSuv = getCheapest(groupByBrand[brand]);
+    result.push(cheapestSuv);
+
+  }
+
+return result;
+}
+
+function getCheapest(obj)
+{
+    return obj.reduce((acc, current) => {
+        return current.prix_jour < acc.prix_jour ? current : acc;
+    })
+}
+console.log(groupCategories(flotte));
