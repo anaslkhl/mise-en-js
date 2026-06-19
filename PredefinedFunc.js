@@ -763,166 +763,18 @@ const employees = [
 ];
 
 
-function getProjectCount(employees){
 
-  let projects = {};
-  for(let i = 0; i < employees.length;i++){
+function getFullNames(employees){
 
-    for(let x = 0;x < employees[i].projects.length;x++){
-
-      if(!projects[employees[i].projects[x]]){
-        projects[employees[i].projects[x]] = 0;
-      }
-      projects[employees[i].projects[x]]++;
-    }
-  }
-  let sortedProjects = [...Object.entries(projects)].sort((a, b) => b[1] - a[1]);
-  console.log(sortedProjects);
+    let result = employees.map(emp => emp.firstName + ' ' + emp.lastName);
+    return result;
 }
+console.log(getFullNames(employees));
 
-getProjectCount(employees);
 
-function getMostLanguage(employees){
+function isActive(employees){
 
-  let languages = {}
-  for(let i= 0; i < employees.length; i++){
-    for(let x = 0; x < employees[i].languages.length;x++){
-
-      if(!languages[employees[i].languages[x]]){
-        languages[employees[i].languages[x]] = 0;
-      }
-      languages[employees[i].languages[x]]++
-    }
-    
-  }
-  let popularLanguage = Object.entries(languages).reduce((max, current) => max[1] > current[1] ? max : current);
-  console.log(popularLanguage); 
-  console.log(languages);
+    let result = employees.filter(emp => emp.isActive === true);
+    return result;
 }
-
-getMostLanguage(employees);
-
-
-function getHighestPaid(employees){
-
-  let result = {};
-
-  employees.forEach(employee => {
-    
-    if(!result[employee.department]){
-
-      result[employee.department] = employee;
-    }
-    else if(result[employee.department].salary < employee.salary){
-      result[employee.department] = employee
-    }
-  });
-  return result;
-}
-
-// console.log(getHighestPaid(employees))
-function getDepartements(employees){
-
-  let obj = {};
-  for(let i = 0; i < employees.length;i++){
-    // console.log(employees[i])
-    if(!obj[employees[i].department]){
-      obj[employees[i].department] = 0;
-    }
-    obj[employees[i].department]++;
-
-  }
-  return obj;
-}
-// console.log(getDepartements(employees));
-// getDepartement(employees);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function getDepartement(obj) {
-  let developementDep = obj.filter((ele) => ele.department === "Développement");
-  return developementDep;
-}
-
-// console.log(getDepartement(employees));
-
-function getEmployeeBySalary(obj, min, max) {
-  return obj.filter((ele) => ele.salary >= min && ele.salary <= max);
-}
-
-// console.log(getEmployeeBySalary(employees, 50000, 60000));
-
-function whoSpealsAlang(obj, lang) {
-  return obj.filter((ele) => ele.languages.includes(lang));
-}
-// console.log(whoSpealsAlang(employees, "Chinese"));
-
-function getActiveStatus(obj) {
-  return obj.filter((ele) => ele.isActive === false);
-}
-
-// console.log(getActiveStatus(employees))
-
-function byAge(obj) {
-  return obj.filter((ele) => ele.age < 30);
-}
-// console.log(byAge(employees));
-
-function multipleFilter(obj) {
-  return obj.filter(
-    (ele) =>
-      ele.department === "Marketing" &&
-      ele.isActive === true &&
-      ele.salary < 55000,
-  );
-}
-
-// console.log(multipleFilter(employees));
-
-function countProjects(obj, minProjects) {
-  return obj.filter((ele) => ele.projects.length < minProjects);
-}
-// console.log(countProjects(employees, 2));
-
-function getNewEmployees(obj, year) {
-  return employees.filter((emp) => {
-    const joinYear = parseInt(emp.joinDate.split("-")[0]);
-    return joinYear > year;
-  });
-}
-
-// console.log(getNewEmployees(employees, 2018));
-
-function getTopTalent(obj)
-{
-    return obj.filter(ele => ele.languages.length >= 2 && ele.skills.length >= 3);
-}
-
-// console.log(getTopTalent(employees));
+console.log(isActive(employees));
